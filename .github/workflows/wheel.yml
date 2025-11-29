@@ -121,6 +121,12 @@ jobs:
           # Control verbosity of the 'pip wheel' output
           CIBW_BUILD_VERBOSITY: 1
           CIBW_BEFORE_ALL_LINUX: yum install -y lapack-devel
+          CIBW_ENVIRONMENT_LINUX: >
+            CC=$DEVTOOLSET_ROOTPATH/usr/bin/gcc
+            CXX=$DEVTOOLSET_ROOTPATH/usr/bin/g++
+            FC=$DEVTOOLSET_ROOTPATH/usr/bin/gfortran
+            LD_LIBRARY_PATH=$DEVTOOLSET_ROOTPATH/usr/lib/gcc/x86_64-redhat-linux/14
+            CPPFLAGS=-I$DEVTOOLSET_ROOTPATH/usr/include/c++/14
           # Delete all other (=/= gcc-15) GCC versions to avoid conflicts in delocation of the wheel
           # MM: 'openblas' from brew requires gcc@15, using a different version for building leads to delocation errors
           # MM: gcc@14 needs macOS14
