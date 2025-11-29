@@ -1,0 +1,44 @@
+[tool.cibuildwheel]
+# Include all PyPy versions
+enable = ["pypy", "pypy-eol"]
+# Control verbosity of the 'pip wheel' output
+build-verbosity = 1
+test-command = [
+    "python -c \"import tblite.interface\"",
+]
+
+[tool.cibuildwheel.config-settings]
+setup-args = [
+    "-Dtblite:openmp=false",
+]
+
+[tool.cibuildwheel.linux]
+before-all = [
+    "yum install -y lapck-devel",
+]
+
+[tool.cibuildwheel.linux.environment]
+CC = "$DEVTOOLSET_ROOTPATH/usr/bin/gcc"
+CXX = "$DEVTOOLSET_ROOTPATH/usr/bin/g++"
+FC = "$DEVTOOLSET_ROOTPATH/usr/bin/gfortran"
+
+[tool.cibuildwheel.macos]
+# Delete all other (=/= gcc-14) GCC versions to avoid conflicts in delocation of the wheel
+# MM: 'openblas' from brew requires gcc@14, using a different version for building leads to delocation errors
+# MM: gcc@14 needs macOS14
+before-all = [
+    "brew uninstall gcc@12",
+    "brew uninstall gcc@13",
+    "brew autoremove",
+    "brew install openblas",
+]
+
+[tool.cibuildwheel.macos.environment]
+# Set macOS variables to find gfortran, lapack, and avoid testing against macOS earlier than 14 (see above)
+CC = "gcc-14"
+CXX = "g++-14"
+FC = "gfortran-14"
+PKG_CONFIG_PATH = "/usr/local/opt/openblas/lib/pkgconfig"
+LDFLAGS = "-L/opt/homebrew/opt/openblas/lib"
+CPPFLAGS = "-I/opt/homebrew/opt/openblas/include"
+MACOSX_DEPLOYMENT_TARGET = "14.0"
