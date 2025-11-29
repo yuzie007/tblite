@@ -69,8 +69,6 @@ jobs:
         retention-days: 5
 
   wheels:
-    needs:
-      - sdist
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -90,24 +88,21 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      # Set up Python to host 'cibuildwheel'
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+      - uses: actions/checkout@v4
 
-      # Install 'cibuildwheel' as the driver for building wheels
-      - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.23.3
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y git
 
-      # Download the source distribution from above
-      - name: Download sdist
-        uses: actions/download-artifact@v4
-        with:
-          name: tblite-python-sdist
+      - name: Reorganize repository
+        run: |
+          git config user.email ""
+          git config user.name "dummy"
+          git subtree add --prefix python/subprojects/tblite . HEAD
 
       # Build wheels for all supported Python versions
       - name: Build wheels
-        run: python -m cibuildwheel --output-dir . *.tar.gz
+        run: python -m cibuildwheel --output-dir . python
         env:
           CIBW_PLAT: ${{ contains(matrix.os, 'macos') && '-Dlapack=openblas' || '' }}
           CIBW_CONFIG_SETTINGS: setup-args="-Dtblite:openmp=false"
