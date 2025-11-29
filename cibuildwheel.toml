@@ -8,12 +8,19 @@ test-command = [
 [tool.cibuildwheel.config-settings]
 setup-args = [
     "-Dtblite:openmp=false",
+    "-Dtblite:lapack=openblas",
+    "-Ddftd4:lapack=openblas",
+    "-Dmulticharge:lapack=openblas",
 ]
 
 [tool.cibuildwheel.linux]
 before-all = [
-    "yum install -y lapck-devel",
+    "yum install -y openblas-devel",
 ]
+
+[tool.cibuildwheel.linux.environment]
+LDFLAGS = "-L/usr/lib64"
+CPPFLAGS = "-I/usr/include/openblas"
 
 [tool.cibuildwheel.macos]
 # Delete all other (=/= gcc-14) GCC versions to avoid conflicts in delocation of the wheel
