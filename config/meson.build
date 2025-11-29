@@ -26,6 +26,7 @@ if fc_id == 'gcc'
   add_project_arguments(
     '-ffree-line-length-none',
     '-fbacktrace',
+    '-lmvec',
     '-Wno-maybe-uninitialized',
     language: 'fortran',
   )
