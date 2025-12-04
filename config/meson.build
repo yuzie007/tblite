@@ -29,6 +29,11 @@ if fc_id == 'gcc'
     '-Wno-maybe-uninitialized',
     language: 'fortran',
   )
+  if os == 'linux'
+    lib_deps += cc.find_library('gfortran')
+    lib_deps += cc.find_library('mvec')
+    lib_deps += cc.find_library('m')
+  endif
   if fc.version().version_compare('<10')
     message('tblite it not tested with GNU Fortran < 10, functionality might be impacted. The build automatically adds ‘-fno-range-check’ for compatibility. Please upgrade to a newer compiler version if possible.') 
     add_project_arguments(
