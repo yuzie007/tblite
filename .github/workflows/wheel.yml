@@ -76,10 +76,10 @@ jobs:
       fail-fast: false
       matrix:
         os:
-        - ubuntu-latest
-        # macos-13
-        - macos-latest
-        # windows-latest
+          - ubuntu-latest
+          - macos-latest
+          - macos-15-intel
+          # windows-latest
         python: ['39', '310', '311', '312', '313', '314']
         include:
           - os: ubuntu-22.04
