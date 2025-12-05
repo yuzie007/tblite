@@ -72,6 +72,10 @@ jobs:
             build-type: debug
             toolchain: {compiler: gcc, version: '12', build: meson}
 
+          - os: macos-15-intel
+            build-type: debug
+            toolchain: {compiler: gcc, version: '14', build: meson}
+
           # - os: windows-latest
           #   build: meson
           #   build-type: debug
