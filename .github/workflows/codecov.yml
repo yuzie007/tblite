@@ -1,4 +1,4 @@
-name: CI
+name: Codecov
 
 on: [push, pull_request]
 
@@ -25,50 +25,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         build-type: [debug]
         toolchain:
           - {compiler: gcc, version: '12', build: meson}
-          - {compiler: gcc, version: '12', build: cmake}
-
-        include:
-          - os: ubuntu-latest
-            build-type: debug
-            toolchain: {compiler: gcc, version: '11', build: meson}
-
-          - os: ubuntu-latest
-            build-type: debug
-            toolchain: {compiler: gcc, version: '13', build: meson}
-
-          - os: ubuntu-latest
-            build-type: debug
-            toolchain: {compiler: gcc, version: '14', build: meson}
-
-          - os: ubuntu-latest
-            build-type: debug
-            toolchain: {compiler: intel-classic, version: '2021.2', mkl_version: '2021.2.0', build: meson}
-
-          - os: ubuntu-latest
-            build-type: debug
-            toolchain: {compiler: intel, version: '2024.1', mkl_version: '2024.1', build: meson}
-
-          - os: ubuntu-latest
-            build-type: debug
-            toolchain: {compiler: intel, version: '2025.1', mkl_version: '2025.1', build: meson}
-
-          - os: ubuntu-latest
-            build-type: debug
-            toolchain: {compiler: gcc, version: '12', build: fpm}
-
-          - os: macos-15-intel
-            build-type: debug
-            toolchain: {compiler: gcc, version: '12', build: meson}
-
-          # - os: windows-latest
-          #   build: meson
-          #   build-type: debug
-          #   compiler: gcc
-          #   shell: msys2 {0}
 
     defaults:
       run:
@@ -173,6 +133,7 @@ jobs:
         --prefix=$PWD/_dist
         --libdir=lib
         --warnlevel=0
+        -Db_coverage=true
         ${{ env.MESON_ARGS }}
       env:
         MESON_ARGS: >-
@@ -236,6 +197,11 @@ jobs:
       env:
         OMP_NUM_THREADS: 1,2,1
 
+    - name: Create coverage report
+      if: ${{ matrix.toolchain.build == 'meson' }}
+      run:
+         ninja -C ${{ env.BUILD_DIR }} coverage
+
     - name: Install project
       if: ${{ matrix.toolchain.build != 'fpm' }}
       run: |
@@ -258,6 +224,12 @@ jobs:
         name: ${{ env.TBLITE_OUTPUT }}
         path: ${{ env.TBLITE_OUTPUT }}
 
+    - name: Upload coverage report
+      if: ${{ matrix.toolchain.build == 'meson' }}
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+
 
   python:
     needs:
@@ -268,16 +240,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         gcc_v: ['12']
-        python_v: ['3.9', '3.10', '3.11', '3.12', '3.13']
-
-        include:
-        - os: macos-latest
-          gcc_v: '12'
-          python_v: '3.12'
-
-        - os: macos-15-intel
-          gcc_v: '12'
-          python_v: '3.12'
+        python_v: ['3.9']
 
     env:
       FC: gfortran
@@ -339,3 +302,8 @@ jobs:
       env:
         LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.TBLITE_PREFIX }}/lib
         DYLD_LIBRARY_PATH: ${{ env.DYLD_LIBRARY_PATH }}:${{ env.TBLITE_PREFIX }}/lib
+
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
