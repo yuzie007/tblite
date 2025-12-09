@@ -88,10 +88,10 @@ jobs:
     - name: Install LAPACK (macOS)
       if: ${{ contains(matrix.os, 'macos') && matrix.toolchain.compiler == 'gcc' }}
       run: |
-        brew install openblas
-        echo "PKG_CONFIG_PATH=$(brew --prefix openblas)/lib/pkgconfig" >> $GITHUB_ENV
-        echo "LDFLAGS=-L$(brew --prefix openblas)/lib" >> $GITHUB_ENV
-        echo "CPPFLAGS=-I$(brew --prefix openblas)/include" >> $GITHUB_ENV
+        brew install lapack
+        echo "PKG_CONFIG_PATH=$(brew --prefix lapack)/lib/pkgconfig" >> $GITHUB_ENV
+        echo "LDFLAGS=-L$(brew --prefix lapack)/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I$(brew --prefix lapack)/include" >> $GITHUB_ENV
 
     - name: Install LAPACK (Linux)
       if: ${{ contains(matrix.os, 'ubuntu') && matrix.toolchain.compiler == 'gcc' }}
@@ -177,7 +177,7 @@ jobs:
       env:
         MESON_ARGS: >-
           ${{ contains(matrix.toolchain.compiler, 'intel') && '-Dfortran_link_args=-qopenmp -Dapi=false' || '' }}
-          ${{ contains(matrix.os, 'macos') && '-Dlapack=openblas' || '' }}
+          ${{ contains(matrix.os, 'macos') && '-Dlapack=netlib' || '' }}
           ${{ contains(matrix.os, 'windows') && '-Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
 
     - name: Configure build (CMake)
@@ -298,10 +298,10 @@ jobs:
     - name: Link LAPACK (macOS)
       if: ${{ contains(matrix.os, 'macos')}}
       run: |
-        brew install openblas
-        echo "PKG_CONFIG_PATH=$(brew --prefix openblas)/lib/pkgconfig" >> $GITHUB_ENV
-        echo "LDFLAGS=-L$(brew --prefix openblas)/lib" >> $GITHUB_ENV
-        echo "CPPFLAGS=-I$(brew --prefix openblas)/include" >> $GITHUB_ENV
+        brew install lapack
+        echo "PKG_CONFIG_PATH=$(brew --prefix lapack)/lib/pkgconfig" >> $GITHUB_ENV
+        echo "LDFLAGS=-L$(brew --prefix lapack)/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I$(brew --prefix lapack)/include" >> $GITHUB_ENV
 
     - name: Install LAPACK (Linux)
       if: ${{ contains(matrix.os, 'ubuntu') }}
