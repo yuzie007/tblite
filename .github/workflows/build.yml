@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        build-type: [debug]
+        build-type: [debug, release]
         toolchain:
           - {compiler: gcc, version: '12', build: meson}
           - {compiler: gcc, version: '12', build: cmake}
@@ -169,7 +169,7 @@ jobs:
       if: ${{ matrix.toolchain.build == 'meson' }}
       run: >-
         meson setup ${{ env.BUILD_DIR }}
-        --buildtype=debug
+        --buildtype=${{ matrix.build-type }}
         --prefix=$PWD/_dist
         --libdir=lib
         --warnlevel=0
@@ -185,7 +185,7 @@ jobs:
       run: >-
         cmake -B${{ env.BUILD_DIR }}
         -GNinja
-        -DCMAKE_BUILD_TYPE=Debug
+        -DCMAKE_BUILD_TYPE=${{ matrix.build-type == 'debug' && 'Debug' || 'Release' }}
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DCMAKE_INSTALL_LIBDIR=lib
 
