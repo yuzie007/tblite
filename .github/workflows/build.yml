@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        build-type: [debug, release]
+        build-type: [debug, debugoptimized, release]
         toolchain:
           - {compiler: gcc, version: '12', build: meson}
           - {compiler: gcc, version: '12', build: cmake}
@@ -185,7 +185,7 @@ jobs:
       run: >-
         cmake -B${{ env.BUILD_DIR }}
         -GNinja
-        -DCMAKE_BUILD_TYPE=${{ matrix.build-type == 'debug' && 'Debug' || 'Release' }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build-type == 'debug' && 'Debug' || (matrix.build-type == 'debugoptimized' && 'RelWithDebInfo' || 'Release') }}
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DCMAKE_INSTALL_LIBDIR=lib
 
