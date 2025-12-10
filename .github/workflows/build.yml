@@ -28,8 +28,8 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         build-type: [debug, debugoptimized, release]
         toolchain:
-          - {compiler: gcc, version: '12', build: meson}
-          - {compiler: gcc, version: '12', build: cmake}
+          - {compiler: gcc, version: '14', build: meson}
+          - {compiler: gcc, version: '14', build: cmake}
 
         include:
           - os: ubuntu-latest
@@ -38,11 +38,11 @@ jobs:
 
           - os: ubuntu-latest
             build-type: debug
-            toolchain: {compiler: gcc, version: '13', build: meson}
+            toolchain: {compiler: gcc, version: '12', build: meson}
 
           - os: ubuntu-latest
             build-type: debug
-            toolchain: {compiler: gcc, version: '14', build: meson}
+            toolchain: {compiler: gcc, version: '13', build: meson}
 
           - os: ubuntu-latest
             build-type: debug
@@ -58,11 +58,11 @@ jobs:
 
           - os: ubuntu-latest
             build-type: debug
-            toolchain: {compiler: gcc, version: '12', build: fpm}
+            toolchain: {compiler: gcc, version: '14', build: fpm}
 
           - os: macos-15-intel
             build-type: debug
-            toolchain: {compiler: gcc, version: '12', build: meson}
+            toolchain: {compiler: gcc, version: '14', build: meson}
 
           # - os: windows-latest
           #   build: meson
@@ -272,11 +272,11 @@ jobs:
 
         include:
         - os: macos-latest
-          gcc_v: '12'
+          gcc_v: '14'
           python_v: '3.12'
 
         - os: macos-15-intel
-          gcc_v: '12'
+          gcc_v: '14'
           python_v: '3.12'
 
     env:
