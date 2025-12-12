@@ -81,10 +81,24 @@ jobs:
       PYTHON_V: 3.9
 
     steps:
+      - name: Setup MSYS2 (Windows)
+        if: ${{ contains(matrix.os, 'windows') }}
+        uses: msys2/setup-msys2@v2
+        with:
+          install: >-
+            git
+            mingw-w64-x86_64-gcc-fortran
+            mingw-w64-x86_64-openblas
+            mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-meson
+            mingw-w64-x86_64-ninja
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
+        if: ${{ ! contains(matrix.os, 'windows') }}
         with:
           python-version: ${{ env.PYTHON_V }}
 
@@ -123,7 +137,7 @@ jobs:
           key: install-${{ matrix.toolchain.compiler }}-${{ matrix.toolchain.version }}-${{ matrix.toolchain.mkl_version }}-${{ matrix.os }}
 
       - name: Install GCC Compiler
-        if: ${{ contains(matrix.toolchain.compiler, 'gcc') }}
+        if: ${{ ! contains(matrix.os, 'windows') && contains(matrix.toolchain.compiler, 'gcc') }}
         uses: fortran-lang/setup-fortran@v1
         with:
           compiler: ${{ matrix.toolchain.compiler }}
@@ -184,7 +198,7 @@ jobs:
           MESON_ARGS: >-
             ${{ contains(matrix.toolchain.compiler, 'intel') && '-Dfortran_link_args=-qopenmp -Dapi=false' || '' }}
             ${{ contains(matrix.os, 'macos') && '-Dlapack=openblas' || '' }}
-            ${{ contains(matrix.os, 'windows') && '-Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
+            ${{ contains(matrix.os, 'windows') && '-Dlapack=openblas -Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
 
       - name: Configure build (CMake)
         if: ${{ matrix.toolchain.build == 'cmake' }}
