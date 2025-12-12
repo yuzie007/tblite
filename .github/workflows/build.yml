@@ -102,6 +102,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y liblapack-dev
 
+      - name: Install LAPACK (Windows)
+        if: ${{ contains(matrix.os, 'windows') && matrix.toolchain.compiler == 'gcc' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: false
+          install: >-
+            git
+            mingw-w64-x86_64-gcc-fortran
+            mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-openblas
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-meson
+            mingw-w64-x86_64-ninja
+
       - name: Install fpm
         if: ${{ matrix.toolchain.build == 'fpm' }}
         uses: fortran-lang/setup-fpm@v7  # fpm 0.11.0
@@ -183,7 +198,7 @@ jobs:
           MESON_ARGS: >-
             ${{ contains(matrix.toolchain.compiler, 'intel') && '-Dfortran_link_args=-qopenmp -Dapi=false' || '' }}
             ${{ contains(matrix.os, 'macos') && '-Dlapack=openblas' || '' }}
-            ${{ contains(matrix.os, 'windows') && '-Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
+            ${{ contains(matrix.os, 'windows') && '-Dlapack=openblas -Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
 
       - name: Configure build (CMake)
         if: ${{ matrix.toolchain.build == 'cmake' }}
