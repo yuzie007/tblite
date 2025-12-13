@@ -23,8 +23,16 @@ endif
 fc_id = fc.get_id()
 
 if fc_id == 'gcc'
+  add_global_arguments(
+    '-ffree-line-length-none',
+    '-fcheck=all',
+    '-fbacktrace',
+    '-Wno-maybe-uninitialized',
+    language: 'fortran',
+  )
   add_project_arguments(
     '-ffree-line-length-none',
+    '-fcheck=all',
     '-fbacktrace',
     '-Wno-maybe-uninitialized',
     language: 'fortran',

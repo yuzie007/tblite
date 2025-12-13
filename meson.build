@@ -23,6 +23,7 @@ project(
   default_options: [
     'buildtype=debugoptimized',
     'default_library=both',
+    'warning_level=everything',
   ],
 )
 install = not (meson.is_subproject() and get_option('default_library') == 'static')
