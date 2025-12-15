@@ -177,6 +177,7 @@ jobs:
         --prefix=$PWD/_dist
         --libdir=lib
         --warnlevel=0
+        -Dfortran_args="-fcheck=all"
         -Db_coverage=${{ env.COVERAGE }}
         ${{ env.MESON_ARGS }}
       env:
