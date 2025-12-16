@@ -198,7 +198,7 @@ jobs:
           MESON_ARGS: >-
             ${{ contains(matrix.toolchain.compiler, 'intel') && '-Dfortran_link_args=-qopenmp -Dapi=false' || '' }}
             ${{ contains(matrix.os, 'macos') && '-Dlapack=openblas' || '' }}
-            ${{ contains(matrix.os, 'windows') && '-Dlapack=openblas -Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
+            ${{ contains(matrix.os, 'windows') && '-Dlapack=openblas -Ddefault_library=static' || '' }}
 
       - name: Configure build (CMake)
         if: ${{ matrix.toolchain.build == 'cmake' }}
