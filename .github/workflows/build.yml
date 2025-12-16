@@ -173,7 +173,10 @@ jobs:
       if: ${{ matrix.toolchain.build == 'meson' }}
       run: >-
         meson setup ${{ env.BUILD_DIR }}
-        --buildtype=debug
+        --buildtype=plain
+        -Ddebug=true
+        -Doptimization=g
+        -Dfortran_args="-fcheck=all"
         --prefix=$PWD/_dist
         --libdir=lib
         --warnlevel=0
