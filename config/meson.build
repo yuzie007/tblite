@@ -27,6 +27,7 @@ if fc_id == 'gcc'
     '-ffree-line-length-none',
     '-fbacktrace',
     '-Wno-maybe-uninitialized',
+    '-std=f2008',
     language: 'fortran',
   )
   # Particularly for the manylinux image to make Python wheels,
